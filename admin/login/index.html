@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Login | Miles Studio</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" href="../../Assets/Miles Studio logo.png" />
+    <link rel="stylesheet" href="../../styles.css" />
+    <link rel="stylesheet" href="../admin.css" />
+  </head>
+  <body class="admin-body auth-page">
+    <main class="auth-shell" aria-labelledby="login-title">
+      <section class="auth-card">
+        <a class="brand auth-brand" href="../../index.html" aria-label="Back to Miles Studio website">
+          <img src="../../Assets/Miles Studio logo.png" alt="" class="brand-logo" />
+          <span>Miles Studio</span>
+        </a>
+
+        <p class="eyebrow">Admin Access</p>
+        <h1 id="login-title">Login to Dashboard</h1>
+        <p class="auth-note">
+          Use the admin credentials to manage podcast guests, featured episodes,
+          contact links, and website content.
+        </p>
+
+        <form class="admin-form" id="login-form">
+          <div class="form-field">
+            <label for="admin-email">Email</label>
+            <input id="admin-email" name="email" type="email" autocomplete="email" required />
+          </div>
+          <div class="form-field">
+            <label for="admin-password">Password</label>
+            <input
+              id="admin-password"
+              name="password"
+              type="password"
+              autocomplete="current-password"
+              required
+            />
+          </div>
+          <button class="btn btn-primary" type="submit">Login</button>
+          <p class="admin-status" id="login-status" role="status" aria-live="polite" hidden></p>
+        </form>
+      </section>
+    </main>
+
+    <script src="../../data-store.js"></script>
+    <script src="../login.js"></script>
+  </body>
+</html>

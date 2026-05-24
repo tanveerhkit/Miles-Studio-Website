@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard | Miles Studio</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" href="../../Assets/Miles Studio logo.png" />
+    <link rel="stylesheet" href="../../styles.css" />
+    <link rel="stylesheet" href="../admin.css" />
+  </head>
+  <body class="admin-body dashboard-body">
+    <header class="admin-topbar">
+      <a class="brand" href="../../index.html" aria-label="Miles Studio public website">
+        <img src="../../Assets/Miles Studio logo.png" alt="" class="brand-logo" />
+        <span>Miles Studio Admin</span>
+      </a>
+      <div class="admin-topbar-actions">
+        <a class="btn admin-light-button" href="../../index.html">View Website</a>
+        <button class="btn btn-primary" id="logout-button" type="button">Logout</button>
+      </div>
+    </header>
+
+    <main class="admin-dashboard">
+      <aside class="admin-sidebar" aria-label="Admin dashboard navigation">
+        <div class="admin-profile-card">
+          <p class="eyebrow">Signed In</p>
+          <strong>Tanveer HK</strong>
+          <span>Podcast admin</span>
+        </div>
+
+        <nav class="admin-side-nav">
+          <a class="admin-nav-link is-active" href="#overview">Overview</a>
+          <a class="admin-nav-link" href="#content-panel">Website Content</a>
+          <a class="admin-nav-link" href="#guest-panel">Podcast Guests</a>
+          <a class="admin-nav-link" href="#upcoming-panel">Upcoming Guests</a>
+        </nav>
+
+        <div class="admin-note-card">
+          <strong>Live Storage</strong>
+          <p>
+            Changes are saved through Vercel API routes into Supabase, so the
+            public website updates for every visitor.
+          </p>
+        </div>
+      </aside>
+
+      <section class="admin-main-area">
+        <div class="admin-page-heading" id="overview">
+          <p class="eyebrow">Dashboard</p>
+          <h1>Manage Miles Studio</h1>
+          <p>
+            Update featured episodes, guest cards, upcoming guests, about text,
+            and all contact links from one clean dashboard.
+          </p>
+        </div>
+
+        <p
+          class="admin-status dashboard-status"
+          id="dashboard-status"
+          role="status"
+          aria-live="polite"
+          hidden
+        ></p>
+
+        <section class="admin-stats-grid" aria-label="Website content summary">
+          <article class="admin-stat-card">
+            <span>Podcast Guests</span>
+            <strong id="guest-count">0</strong>
+          </article>
+          <article class="admin-stat-card">
+            <span>Upcoming Guests</span>
+            <strong id="upcoming-count">0</strong>
+          </article>
+          <article class="admin-stat-card">
+            <span>Featured Episode</span>
+            <strong id="featured-stat-name">-</strong>
+          </article>
+          <article class="admin-stat-card">
+            <span>Published Statuses</span>
+            <strong id="published-count">0</strong>
+          </article>
+        </section>
+
+        <section class="admin-panel" id="content-panel" aria-labelledby="content-settings-title">
+          <div class="admin-section-heading">
+            <div>
+              <p class="eyebrow">Website</p>
+              <h2 id="content-settings-title">Website Content</h2>
+            </div>
+            <button class="btn btn-primary admin-save-button" type="submit" form="content-form">
+              Save Website Content
+            </button>
+          </div>
+
+          <form class="admin-form" id="content-form">
+            <details class="admin-details" open>
+              <summary>
+                <span>Hero Section</span>
+                <small>Main heading and introduction text</small>
+              </summary>
+              <div class="admin-form-grid">
+                <div class="form-field">
+                  <label for="hero-eyebrow-field">Hero Label</label>
+                  <input id="hero-eyebrow-field" type="text" />
+                </div>
+                <div class="form-field">
+                  <label for="hero-title-field">Hero Heading</label>
+                  <input id="hero-title-field" type="text" />
+                </div>
+                <div class="form-field wide-field">
+                  <label for="hero-subtitle-field">Hero Subheading</label>
+                  <textarea id="hero-subtitle-field" rows="3"></textarea>
+                </div>
+              </div>
+            </details>
+
+            <details class="admin-details" open>
+              <summary>
+                <span>Featured Podcast</span>
+                <small>Latest episode shown near the top of the website</small>
+              </summary>
+              <div class="admin-form-grid">
+                <div class="form-field">
+                  <label for="featured-source-field">Choose Existing Guest as Featured</label>
+                  <select id="featured-source-field"></select>
+                </div>
+                <div class="form-field admin-field-action">
+                  <label aria-hidden="true">&nbsp;</label>
+                  <button class="btn admin-outline-button" id="use-featured-source" type="button">
+                    Use Selected Guest
+                  </button>
+                </div>
+                <div class="form-field">
+                  <label for="featured-name-field">Featured Guest Name</label>
+                  <input id="featured-name-field" type="text" />
+                </div>
+                <div class="form-field">
+                  <label for="featured-video-field">Featured YouTube Video Link</label>
+                  <input id="featured-video-field" type="url" />
+                </div>
+                <div class="form-field">
+                  <label for="featured-episode-field">Watch Episode Link</label>
+                  <input id="featured-episode-field" type="url" />
+                </div>
+                <div class="form-field">
+                  <label for="featured-image-field">Featured Image URL or Uploaded Image</label>
+                  <input id="featured-image-field" type="text" />
+                </div>
+                <div class="form-field">
+                  <label for="featured-image-upload">Upload Featured Image</label>
+                  <input id="featured-image-upload" type="file" accept="image/*" />
+                </div>
+                <div class="form-field">
+                  <label for="featured-accent-field">Featured Placeholder Color</label>
+                  <select id="featured-accent-field">
+                    <option value="accent-red">Red</option>
+                    <option value="accent-teal">Teal</option>
+                    <option value="accent-gold">Gold</option>
+                    <option value="accent-ink">Ink</option>
+                  </select>
+                </div>
+                <div class="form-field wide-field">
+                  <label for="featured-description-field">Featured Description</label>
+                  <textarea id="featured-description-field" rows="3"></textarea>
+                </div>
+              </div>
+            </details>
+
+            <details class="admin-details">
+              <summary>
+                <span>About Podcast</span>
+                <small>Short introduction shown before the contact section</small>
+              </summary>
+              <div class="admin-form-grid">
+                <div class="form-field">
+                  <label for="about-title-field">About Heading</label>
+                  <input id="about-title-field" type="text" />
+                </div>
+                <div class="form-field wide-field">
+                  <label for="about-content-field">About Podcast Content</label>
+                  <textarea id="about-content-field" rows="4"></textarea>
+                </div>
+              </div>
+            </details>
+
+            <details class="admin-details">
+              <summary>
+                <span>Contact and Social Links</span>
+                <small>Email, YouTube, LinkedIn, WhatsApp, and contact copy</small>
+              </summary>
+              <div class="admin-form-grid">
+                <div class="form-field">
+                  <label for="contact-heading-field">Contact Heading</label>
+                  <input id="contact-heading-field" type="text" />
+                </div>
+                <div class="form-field">
+                  <label for="contact-email-field">Email</label>
+                  <input id="contact-email-field" type="email" />
+                </div>
+                <div class="form-field">
+                  <label for="contact-youtube-field">YouTube Link</label>
+                  <input id="contact-youtube-field" type="url" />
+                </div>
+                <div class="form-field">
+                  <label for="contact-linkedin-field">LinkedIn Link</label>
+                  <input id="contact-linkedin-field" type="url" />
+                </div>
+                <div class="form-field">
+                  <label for="contact-whatsapp-field">WhatsApp Link</label>
+                  <input id="contact-whatsapp-field" type="url" />
+                </div>
+                <div class="form-field wide-field">
+                  <label for="contact-intro-field">Contact Intro Text</label>
+                  <textarea id="contact-intro-field" rows="3"></textarea>
+                </div>
+              </div>
+            </details>
+          </form>
+        </section>
+
+        <section class="admin-panel" id="guest-panel" aria-labelledby="guest-management-title">
+          <div class="admin-section-heading">
+            <div>
+              <p class="eyebrow">Guests</p>
+              <h2 id="guest-management-title">Podcast Guest Cards</h2>
+            </div>
+            <button class="btn admin-outline-button" id="new-guest-button" type="button">
+              Add New Guest
+            </button>
+          </div>
+
+          <form class="admin-form admin-editor-form" id="guest-form">
+            <input id="guest-id-field" type="hidden" />
+            <div class="admin-form-intro">
+              <strong id="guest-editor-title">Add Podcast Guest</strong>
+              <span>Manage photo, profession, description, and YouTube episode link.</span>
+            </div>
+            <div class="admin-form-grid">
+              <div class="form-field">
+                <label for="guest-name-field">Guest Name</label>
+                <input id="guest-name-field" type="text" required />
+              </div>
+              <div class="form-field">
+                <label for="guest-title-field">Profession / Title</label>
+                <input id="guest-title-field" type="text" required />
+              </div>
+              <div class="form-field">
+                <label for="guest-video-field">YouTube Video Link</label>
+                <input id="guest-video-field" type="url" required />
+              </div>
+              <div class="form-field">
+                <label for="guest-image-field">Guest Image URL or Uploaded Image</label>
+                <input id="guest-image-field" type="text" />
+              </div>
+              <div class="form-field">
+                <label for="guest-image-upload">Upload Guest Image</label>
+                <input id="guest-image-upload" type="file" accept="image/*" />
+              </div>
+              <div class="form-field">
+                <label for="guest-accent-field">Placeholder Color</label>
+                <select id="guest-accent-field">
+                  <option value="accent-red">Red</option>
+                  <option value="accent-teal">Teal</option>
+                  <option value="accent-gold">Gold</option>
+                  <option value="accent-ink">Ink</option>
+                </select>
+              </div>
+              <div class="form-field wide-field">
+                <label for="guest-description-field">Guest Description</label>
+                <textarea id="guest-description-field" rows="3" required></textarea>
+              </div>
+            </div>
+            <div class="admin-form-actions">
+              <button class="btn btn-primary" id="guest-save-button" type="submit">Add Guest</button>
+              <button class="btn admin-outline-button" id="guest-cancel-button" type="button">
+                Cancel
+              </button>
+            </div>
+          </form>
+
+          <div class="admin-list" id="guest-list" aria-live="polite"></div>
+        </section>
+
+        <section class="admin-panel" id="upcoming-panel" aria-labelledby="upcoming-management-title">
+          <div class="admin-section-heading">
+            <div>
+              <p class="eyebrow">Upcoming</p>
+              <h2 id="upcoming-management-title">Upcoming Guest Cards</h2>
+            </div>
+            <button class="btn admin-outline-button" id="new-upcoming-button" type="button">
+              Add Upcoming Guest
+            </button>
+          </div>
+
+          <form class="admin-form admin-editor-form" id="upcoming-form">
+            <input id="upcoming-id-field" type="hidden" />
+            <div class="admin-form-intro">
+              <strong id="upcoming-editor-title">Add Upcoming Guest</strong>
+              <span>Set the guest, topic, expected date, and episode status.</span>
+            </div>
+            <div class="admin-form-grid">
+              <div class="form-field">
+                <label for="upcoming-name-field">Guest Name</label>
+                <input id="upcoming-name-field" type="text" required />
+              </div>
+              <div class="form-field">
+                <label for="upcoming-topic-field">Profession / Topic</label>
+                <input id="upcoming-topic-field" type="text" required />
+              </div>
+              <div class="form-field">
+                <label for="upcoming-date-label-field">Expected Podcast Date</label>
+                <input id="upcoming-date-label-field" type="text" placeholder="June 2026" required />
+              </div>
+              <div class="form-field">
+                <label for="upcoming-date-iso-field">Date Value</label>
+                <input id="upcoming-date-iso-field" type="month" />
+              </div>
+              <div class="form-field">
+                <label for="upcoming-status-field">Status</label>
+                <select id="upcoming-status-field" required>
+                  <option value="Coming Soon">Coming Soon</option>
+                  <option value="Scheduled">Scheduled</option>
+                  <option value="Recorded">Recorded</option>
+                  <option value="Published">Published</option>
+                </select>
+              </div>
+            </div>
+            <div class="admin-form-actions">
+              <button class="btn btn-primary" id="upcoming-save-button" type="submit">
+                Add Upcoming Guest
+              </button>
+              <button class="btn admin-outline-button" id="upcoming-cancel-button" type="button">
+                Cancel
+              </button>
+            </div>
+          </form>
+
+          <div class="admin-list" id="upcoming-list" aria-live="polite"></div>
+        </section>
+      </section>
+    </main>
+
+    <script src="../../data-store.js"></script>
+    <script src="../dashboard.js"></script>
+  </body>
+</html>

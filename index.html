@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Miles Studio | YouTube Podcast Conversations</title>
+    <meta
+      name="description"
+      content="Miles Studio is a YouTube podcast platform for inspiring conversations with creators, professionals, learners, and people with real life lessons to share."
+    />
+    <meta name="author" content="Miles Studio" />
+    <meta property="og:title" content="Miles Studio | Conversations That Inspire Growth" />
+    <meta
+      property="og:description"
+      content="Watch podcast conversations, discover featured guests, and connect with Miles Studio for podcast collaboration."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="Assets/miles studio open book podcast logo.png" />
+    <link rel="icon" href="Assets/Miles Studio logo.png" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="navbar" aria-label="Primary navigation">
+        <a class="brand" href="#home" aria-label="Miles Studio home">
+          <img src="Assets/Miles Studio logo.png" alt="" class="brand-logo" />
+          <span>Miles Studio</span>
+        </a>
+
+        <button
+          class="nav-toggle"
+          type="button"
+          aria-label="Open navigation"
+          aria-controls="primary-menu"
+          aria-expanded="false"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <div class="nav-menu" id="primary-menu">
+          <a class="nav-link" href="#home">Home</a>
+          <a class="nav-link" href="#guests">Guests</a>
+          <a class="nav-link" href="#upcoming">Upcoming Guests</a>
+          <a class="nav-link" href="#contact">Contact</a>
+          <a class="nav-admin" href="admin/login/index.html">Admin Login</a>
+          <a
+            class="nav-youtube"
+            data-youtube-link
+            href="https://www.youtube.com/@milesstudio"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span class="play-dot" aria-hidden="true"></span>
+            YouTube
+          </a>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" id="home" aria-labelledby="hero-title">
+        <div class="section-shell hero-content">
+          <p class="eyebrow" id="hero-eyebrow">YouTube Podcast Channel</p>
+          <h1 id="hero-title">Conversations That Inspire Growth</h1>
+          <p class="hero-subtitle" id="hero-subtitle">
+            Welcome to Miles Studio &mdash; a podcast platform where we talk with
+            inspiring people, creators, professionals, and learners to share real
+            experiences and life lessons.
+          </p>
+          <div class="hero-actions" aria-label="Hero actions">
+            <a
+              class="btn btn-primary"
+              data-youtube-link
+              href="https://www.youtube.com/@milesstudio"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Watch on YouTube
+            </a>
+            <a class="btn btn-secondary" href="#contact">Connect for Podcast</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section featured-section" aria-labelledby="featured-title">
+        <div class="section-shell">
+          <div class="section-heading">
+            <p class="eyebrow">Latest Podcast</p>
+            <h2 id="featured-title">Featured Episode</h2>
+          </div>
+
+          <article class="featured-card" id="featured-card">
+            <div class="video-frame">
+              <iframe
+                src="https://www.youtube.com/embed/ysz5S6PUM-U"
+                title="Placeholder YouTube episode for Miles Studio"
+                loading="lazy"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen
+              ></iframe>
+            </div>
+
+            <div class="featured-content">
+              <p class="card-kicker">Featured Guest</p>
+              <h3>Riya Mehta</h3>
+              <p>
+                A thoughtful conversation about career growth, creative
+                confidence, and the lessons that help people keep moving forward.
+              </p>
+              <a
+                class="btn btn-primary"
+                href="https://www.youtube.com/watch?v=ysz5S6PUM-U"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Watch Episode
+              </a>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="guests" aria-labelledby="guests-title">
+        <div class="section-shell">
+          <div class="section-heading">
+            <p class="eyebrow">Guest Library</p>
+            <h2 id="guests-title">Podcast Guests</h2>
+          </div>
+          <div class="guest-grid" id="guest-grid"></div>
+        </div>
+      </section>
+
+      <section class="section upcoming-section" id="upcoming" aria-labelledby="upcoming-title">
+        <div class="section-shell">
+          <div class="section-heading">
+            <p class="eyebrow">Next Conversations</p>
+            <h2 id="upcoming-title">Upcoming Guests</h2>
+          </div>
+          <div class="upcoming-grid" id="upcoming-grid"></div>
+        </div>
+      </section>
+
+      <section class="section about-section" aria-labelledby="about-title">
+        <div class="section-shell about-panel">
+          <p class="eyebrow">About Podcast</p>
+          <h2 id="about-title">About Miles Studio</h2>
+          <p id="about-copy">
+            Miles Studio is a podcast channel focused on real conversations, life
+            learning, career growth, creativity, business, and personal
+            experiences. The goal is to bring valuable stories and lessons from
+            different people to the audience.
+          </p>
+        </div>
+      </section>
+
+      <section class="section contact-section" id="contact" aria-labelledby="contact-title">
+        <div class="section-shell contact-layout">
+          <div class="contact-copy">
+            <p class="eyebrow">Connect</p>
+            <h2 id="contact-title">Connect for Podcast Collaboration</h2>
+            <p id="contact-intro">
+              Have a story, guest suggestion, or collaboration idea for Miles
+              Studio? Send a message and I will connect with you soon.
+            </p>
+
+            <div class="direct-links" id="direct-links" aria-label="Direct contact links">
+              <a data-linkedin-link href="https://www.linkedin.com/in/tanveerhkit" target="_blank" rel="noopener noreferrer">
+                LinkedIn
+              </a>
+              <a data-youtube-link href="https://www.youtube.com/@milesstudio" target="_blank" rel="noopener noreferrer">
+                YouTube
+              </a>
+              <a data-email-link href="mailto:tanveerhk.it@gmail.com">tanveerhk.it@gmail.com</a>
+              <a
+                data-whatsapp-link
+                href="https://wa.me/919653030160?text=Hi%2C%20I%20want%20to%20connect%20with%20you%20for%20the%20podcast."
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                WhatsApp
+              </a>
+            </div>
+          </div>
+
+          <form class="contact-form" id="contact-form">
+            <div class="form-field">
+              <label for="name">Name</label>
+              <input id="name" name="name" type="text" autocomplete="name" required />
+            </div>
+            <div class="form-field">
+              <label for="email">Email</label>
+              <input id="email" name="email" type="email" autocomplete="email" required />
+            </div>
+            <div class="form-field">
+              <label for="message">Message</label>
+              <textarea id="message" name="message" rows="5" required></textarea>
+            </div>
+            <button class="btn btn-primary form-submit" type="submit">Submit</button>
+            <p class="form-status" id="form-status" role="status" aria-live="polite" hidden></p>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="section-shell footer-inner">
+        <p>&copy; 2026 Miles Studio. All rights reserved.</p>
+        <div class="footer-links" aria-label="Social links">
+          <a data-youtube-link href="https://www.youtube.com/@milesstudio" target="_blank" rel="noopener noreferrer">YouTube</a>
+          <a data-linkedin-link href="https://www.linkedin.com/in/tanveerhkit" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        </div>
+      </div>
+    </footer>
+
+    <script src="data-store.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

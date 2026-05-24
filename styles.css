@@ -747,6 +747,26 @@ textarea {
   transform: translateY(-2px);
 }
 
+.contact-text-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  margin-top: 26px;
+}
+
+.contact-text-links a {
+  color: var(--charcoal);
+  font-weight: 850;
+  text-decoration: underline;
+  text-underline-offset: 5px;
+  text-decoration-color: rgba(255, 0, 51, 0.34);
+  overflow-wrap: anywhere;
+}
+
+.contact-text-links a:hover {
+  color: var(--youtube);
+}
+
 .contact-form {
   display: grid;
   gap: 18px;

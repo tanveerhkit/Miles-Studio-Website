@@ -1,6 +1,7 @@
 const DEFAULT_ADMIN_EMAIL = "tanveerhk.it@gmail.com";
 const DEFAULT_ADMIN_PASSWORD = "tanveerhkit";
 const SITE_CONTENT_TABLE = "site_content";
+const CONTACT_MESSAGES_TABLE = "contact_messages";
 const SITE_CONTENT_ID = "main";
 
 function sendJson(response, statusCode, payload) {
@@ -95,6 +96,7 @@ function getBearerToken(request) {
 }
 
 module.exports = {
+  CONTACT_MESSAGES_TABLE,
   SITE_CONTENT_ID,
   SITE_CONTENT_TABLE,
   getAdminCredentials,

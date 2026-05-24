@@ -222,14 +222,46 @@ document.querySelectorAll(".nav-link").forEach((link) => {
 });
 
 if (contactForm) {
-  contactForm.addEventListener("submit", (event) => {
+  contactForm.addEventListener("submit", async (event) => {
     event.preventDefault();
 
-    const message = "Thank you for reaching out! I will connect with you soon.";
-    alert(message);
-    formStatus.textContent = message;
-    formStatus.hidden = false;
-    contactForm.reset();
+    const submitButton = contactForm.querySelector("button[type='submit']");
+    const payload = {
+      name: contactForm.elements.name.value.trim(),
+      email: contactForm.elements.email.value.trim(),
+      message: contactForm.elements.message.value.trim(),
+    };
+
+    submitButton.disabled = true;
+    submitButton.textContent = "Sending...";
+    formStatus.hidden = true;
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data?.message || "Message could not be sent.");
+      }
+
+      formStatus.textContent =
+        data?.message || "Thank you for reaching out! I will connect with you soon.";
+      formStatus.hidden = false;
+      contactForm.reset();
+    } catch (error) {
+      formStatus.textContent =
+        error.message || "Message could not be sent. Please use WhatsApp or email.";
+      formStatus.hidden = false;
+    } finally {
+      submitButton.disabled = false;
+      submitButton.textContent = "Submit";
+    }
   });
 }
 

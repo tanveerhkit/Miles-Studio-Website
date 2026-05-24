@@ -249,6 +249,38 @@
     return saveSiteContent(data?.content || normalized);
   }
 
+  async function loadContactMessages() {
+    const token = sessionStorage.getItem(ADMIN_TOKEN_KEY);
+
+    if (!token) {
+      throw new Error("Admin session expired. Please login again.");
+    }
+
+    const data = await requestJson("/api/contact", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return Array.isArray(data?.messages) ? data.messages : [];
+  }
+
+  async function deleteContactMessage(messageId) {
+    const token = sessionStorage.getItem(ADMIN_TOKEN_KEY);
+
+    if (!token) {
+      throw new Error("Admin session expired. Please login again.");
+    }
+
+    return requestJson(`/api/contact?id=${encodeURIComponent(messageId)}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
+
   async function loginAdmin(email, password) {
     try {
       const data = await requestJson("/api/admin-login", {
@@ -353,6 +385,8 @@
     saveSiteContent,
     loadSharedContent,
     saveSharedContent,
+    loadContactMessages,
+    deleteContactMessage,
     resetSiteContent,
     loginAdmin,
     logoutAdmin,

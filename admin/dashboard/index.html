@@ -34,6 +34,7 @@
           <a class="admin-nav-link" href="#content-panel">Website Content</a>
           <a class="admin-nav-link" href="#guest-panel">Podcast Guests</a>
           <a class="admin-nav-link" href="#upcoming-panel">Upcoming Guests</a>
+          <a class="admin-nav-link" href="#messages-panel">Messages</a>
         </nav>
 
         <div class="admin-note-card">
@@ -79,6 +80,10 @@
           <article class="admin-stat-card">
             <span>Published Statuses</span>
             <strong id="published-count">0</strong>
+          </article>
+          <article class="admin-stat-card">
+            <span>Contact Messages</span>
+            <strong id="message-count">0</strong>
           </article>
         </section>
 
@@ -337,6 +342,22 @@
           </form>
 
           <div class="admin-list" id="upcoming-list" aria-live="polite"></div>
+        </section>
+
+        <section class="admin-panel" id="messages-panel" aria-labelledby="messages-title">
+          <div class="admin-section-heading">
+            <div>
+              <p class="eyebrow">Inbox</p>
+              <h2 id="messages-title">Contact Messages</h2>
+            </div>
+            <button class="btn admin-outline-button" id="refresh-messages-button" type="button">
+              Refresh Messages
+            </button>
+          </div>
+
+          <div class="admin-list" id="message-list" aria-live="polite">
+            <p class="admin-list-copy">Loading messages...</p>
+          </div>
         </section>
       </section>
     </main>

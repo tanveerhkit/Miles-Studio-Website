@@ -4,7 +4,7 @@
   "private": true,
   "type": "commonjs",
   "scripts": {
-    "check": "node --check data-store.js && node --check script.js && node --check admin/login.js && node --check admin/dashboard.js && node --check api/_shared.js && node --check api/content.js && node --check api/admin-login.js"
+    "check": "node --check data-store.js && node --check script.js && node --check admin/login.js && node --check admin/dashboard.js && node --check api/_shared.js && node --check api/content.js && node --check api/contact.js && node --check api/admin-login.js"
   },
   "engines": {
     "node": "20.x"

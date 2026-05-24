@@ -7,8 +7,9 @@ The live content flow is:
 1. Public website loads content from `/api/content`.
 2. Admin logs in through `/api/admin-login`.
 3. Admin dashboard saves content through `/api/content`.
-4. Vercel API routes store the content in Supabase Postgres.
-5. Every visitor sees the same updated website content.
+4. Contact form submissions are saved through `/api/contact`.
+5. Vercel API routes store the content and contact messages in Supabase Postgres.
+6. Every visitor sees the same updated website content.
 
 ## 1. Create Free Supabase Project
 
@@ -20,7 +21,7 @@ The live content flow is:
 supabase/schema.sql
 ```
 
-This creates one table named `site_content`.
+This creates the `site_content` table and the `contact_messages` table.
 
 ## 2. Get Supabase Keys
 
@@ -80,6 +81,7 @@ After deployment, these routes will work:
 - `/admin/dashboard`
 - `/api/content`
 - `/api/admin-login`
+- `/api/contact`
 
 The public website has an **Admin Login** button in the navbar.
 

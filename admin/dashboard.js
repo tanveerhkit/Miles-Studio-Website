@@ -9,7 +9,9 @@ const guestForm = document.querySelector("#guest-form");
 const upcomingForm = document.querySelector("#upcoming-form");
 const guestList = document.querySelector("#guest-list");
 const upcomingList = document.querySelector("#upcoming-list");
+const messageList = document.querySelector("#message-list");
 const navLinks = document.querySelectorAll(".admin-nav-link");
+let contactMessages = [];
 
 function getField(id) {
   return document.querySelector(`#${id}`);
@@ -132,6 +134,7 @@ function renderStats() {
   setText("upcoming-count", content.upcomingGuests.length);
   setText("featured-stat-name", content.featuredPodcast.guestName || "-");
   setText("published-count", publishedCount);
+  setText("message-count", contactMessages.length);
 }
 
 function resetGuestForm() {
@@ -236,12 +239,70 @@ function renderUpcomingList() {
     .join("");
 }
 
+function formatMessageDate(value) {
+  if (!value) {
+    return "Just now";
+  }
+
+  return new Intl.DateTimeFormat("en-IN", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(new Date(value));
+}
+
+function renderMessageList() {
+  if (!contactMessages.length) {
+    messageList.innerHTML = `<p class="admin-list-copy">No contact messages yet.</p>`;
+    return;
+  }
+
+  messageList.innerHTML = contactMessages
+    .map(
+      (message) => `
+        <article class="admin-list-item admin-message-item" data-message-id="${escapeAttribute(
+          message.id
+        )}">
+          <div class="admin-item-avatar accent-teal" aria-hidden="true">
+            ${escapeHtml(store.getInitials(message.name))}
+          </div>
+          <div>
+            <h3>${escapeHtml(message.name)}</h3>
+            <p class="admin-message-meta">
+              <a href="mailto:${escapeAttribute(message.email)}">${escapeHtml(message.email)}</a>
+              <span>${escapeHtml(formatMessageDate(message.created_at))}</span>
+            </p>
+            <p>${escapeHtml(message.message)}</p>
+          </div>
+          <div class="admin-item-actions">
+            <a class="admin-mini-link" href="mailto:${escapeAttribute(message.email)}">Reply</a>
+            <button class="admin-mini-button danger" type="button" data-action="delete-message">
+              Delete
+            </button>
+          </div>
+        </article>
+      `
+    )
+    .join("");
+}
+
 function renderDashboard() {
   renderStats();
   renderFeaturedSourceOptions();
   fillContentForm();
   renderGuestList();
   renderUpcomingList();
+  renderMessageList();
+}
+
+async function loadMessages() {
+  try {
+    contactMessages = await store.loadContactMessages();
+    renderDashboard();
+  } catch (error) {
+    messageList.innerHTML = `<p class="admin-list-copy">${escapeHtml(
+      error.message || "Messages could not be loaded."
+    )}</p>`;
+  }
 }
 
 function createGuestFromForm(existingId) {
@@ -495,6 +556,36 @@ upcomingList.addEventListener("click", async (event) => {
   }
 });
 
+messageList.addEventListener("click", async (event) => {
+  const button = event.target.closest("button[data-action='delete-message']");
+  const item = event.target.closest("[data-message-id]");
+
+  if (!button || !item) {
+    return;
+  }
+
+  const message = contactMessages.find((entry) => entry.id === item.dataset.messageId);
+
+  if (!message) {
+    return;
+  }
+
+  if (!window.confirm(`Delete message from ${message.name}?`)) {
+    return;
+  }
+
+  try {
+    await store.deleteContactMessage(message.id);
+    contactMessages = contactMessages.filter((entry) => entry.id !== message.id);
+    renderDashboard();
+    showStatus("Message deleted successfully.");
+  } catch (error) {
+    showStatus(error.message || "Message could not be deleted.", true);
+  }
+});
+
+getField("refresh-messages-button").addEventListener("click", loadMessages);
+
 bindImageUpload("featured-image-upload", "featured-image-field");
 bindImageUpload("guest-image-upload", "guest-image-field");
 
@@ -516,6 +607,7 @@ async function bootDashboard() {
   resetGuestForm();
   resetUpcomingForm();
   renderDashboard();
+  await loadMessages();
   statusEl.hidden = true;
 }
 

@@ -52,7 +52,8 @@ ADMIN_SESSION_TOKEN=make-a-long-random-secret-token
 ```
 
 Use a long random value for `ADMIN_SESSION_TOKEN`, for example a 40+ character
-random string.
+random string. The app has a fallback token so login will not completely break
+if this variable is missing, but setting your own token is strongly recommended.
 
 ## 4. Deploy to Vercel
 

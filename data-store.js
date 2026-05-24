@@ -2,6 +2,7 @@
   const STORAGE_KEY = "milesStudio.content.v1";
   const AUTH_KEY = "milesStudio.adminSession.v2";
   const ADMIN_TOKEN_KEY = "milesStudio.adminToken.v1";
+  let lastAdminLoginError = "";
 
   const placeholderVideoUrl = "https://www.youtube.com/watch?v=ysz5S6PUM-U";
 
@@ -282,6 +283,8 @@
   }
 
   async function loginAdmin(email, password) {
+    lastAdminLoginError = "";
+
     try {
       const data = await requestJson("/api/admin-login", {
         method: "POST",
@@ -305,8 +308,13 @@
       return true;
     } catch (error) {
       console.warn("Admin login failed.", error);
+      lastAdminLoginError = error.message || "Admin login failed.";
       return false;
     }
+  }
+
+  function getLastAdminLoginError() {
+    return lastAdminLoginError;
   }
 
   async function isAdminLoggedIn() {
@@ -389,6 +397,7 @@
     deleteContactMessage,
     resetSiteContent,
     loginAdmin,
+    getLastAdminLoginError,
     logoutAdmin,
     isAdminLoggedIn,
     createId,

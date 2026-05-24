@@ -31,7 +31,10 @@ loginForm.addEventListener("submit", async (event) => {
     return;
   }
 
-  showLoginStatus("Invalid credentials or live admin API is not configured.", true);
+  showLoginStatus(
+    store.getLastAdminLoginError() || "Invalid admin email or password.",
+    true
+  );
   submitButton.disabled = false;
   submitButton.textContent = "Login";
 });

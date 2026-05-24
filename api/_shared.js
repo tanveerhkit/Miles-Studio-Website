@@ -1,5 +1,6 @@
 const DEFAULT_ADMIN_EMAIL = "tanveerhk.it@gmail.com";
 const DEFAULT_ADMIN_PASSWORD = "tanveerhkit";
+const DEFAULT_ADMIN_SESSION_TOKEN = "miles_studio_admin_session_token_change_in_vercel";
 const SITE_CONTENT_TABLE = "site_content";
 const CONTACT_MESSAGES_TABLE = "contact_messages";
 const SITE_CONTENT_ID = "main";
@@ -49,7 +50,7 @@ function getAdminCredentials() {
   return {
     email: process.env.ADMIN_EMAIL || DEFAULT_ADMIN_EMAIL,
     password: process.env.ADMIN_PASSWORD || DEFAULT_ADMIN_PASSWORD,
-    token: getRequiredEnv("ADMIN_SESSION_TOKEN"),
+    token: process.env.ADMIN_SESSION_TOKEN || DEFAULT_ADMIN_SESSION_TOKEN,
   };
 }
 

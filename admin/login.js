@@ -10,7 +10,7 @@ function showLoginStatus(message, isError = false) {
 
 async function redirectIfAlreadyLoggedIn() {
   if (await store.isAdminLoggedIn()) {
-    window.location.replace("../dashboard/index.html");
+    window.location.replace("/admin/dashboard");
   }
 }
 
@@ -27,7 +27,7 @@ loginForm.addEventListener("submit", async (event) => {
 
   if (await store.loginAdmin(email, password)) {
     showLoginStatus("Login successful. Opening dashboard...");
-    window.location.href = "../dashboard/index.html";
+    window.location.href = "/admin/dashboard";
     return;
   }
 

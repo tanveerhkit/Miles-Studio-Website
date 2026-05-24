@@ -366,7 +366,7 @@ function bindImageUpload(fileFieldId, targetFieldId) {
 
 logoutButton.addEventListener("click", () => {
   store.logoutAdmin();
-  window.location.href = "../login/index.html";
+  window.location.href = "/admin/login";
 });
 
 contentForm.addEventListener("submit", async (event) => {
@@ -598,7 +598,7 @@ navLinks.forEach((link) => {
 
 async function bootDashboard() {
   if (!(await store.isAdminLoggedIn())) {
-    window.location.replace("../login/index.html");
+    window.location.replace("/admin/login");
     return;
   }
 

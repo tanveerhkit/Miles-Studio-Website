@@ -699,10 +699,18 @@ textarea {
   align-items: start;
 }
 
+.contact-layout-simple {
+  display: block;
+}
+
 .contact-copy p:not(.eyebrow) {
   max-width: 520px;
   color: var(--muted);
   margin: 18px 0 0;
+}
+
+.contact-layout-simple .contact-copy {
+  max-width: 760px;
 }
 
 .direct-links {

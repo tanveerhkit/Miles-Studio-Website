@@ -207,14 +207,16 @@ function renderGuestList() {
 
   guestList.innerHTML = content.podcastGuests
     .map(
-      (guest) => {
+      (guest, index) => {
         const isFeatured =
-          guest.id === featuredGuestId || (!featuredGuestId && guest.name === featuredGuestName);
+          guest.id === featuredGuestId ||
+          guest.isFeatured ||
+          (!featuredGuestId && guest.name === featuredGuestName);
 
         return `
         <article class="admin-list-item ${
           isFeatured ? "is-featured" : ""
-        }" data-guest-id="${escapeAttribute(guest.id)}">
+        }" data-guest-id="${escapeAttribute(guest.id)}" data-guest-index="${index}">
           ${renderSmallAvatar(guest)}
           <div>
             <h3>${escapeHtml(guest.name)}</h3>
@@ -354,6 +356,23 @@ function createGuestFromForm(existingId) {
     videoUrl: getValue("guest-video-field"),
     isFeatured: Boolean(existingGuest?.isFeatured),
   };
+}
+
+function ensureGuestId(guest, index) {
+  if (guest.id) {
+    return guest;
+  }
+
+  const guestWithId = {
+    ...guest,
+    id: store.createId("guest"),
+  };
+
+  content.podcastGuests = content.podcastGuests.map((item, itemIndex) =>
+    itemIndex === index ? guestWithId : item
+  );
+
+  return guestWithId;
 }
 
 function createUpcomingFromForm(existingId) {
@@ -513,14 +532,14 @@ guestForm.addEventListener("submit", async (event) => {
 
 guestList.addEventListener("click", async (event) => {
   const button = event.target.closest("button[data-action]");
-  const item = event.target.closest("[data-guest-id]");
+  const item = event.target.closest("[data-guest-index]");
 
   if (!button || !item) {
     return;
   }
 
-  const guestId = item.dataset.guestId;
-  const guest = content.podcastGuests.find((entry) => entry.id === guestId);
+  const guestIndex = Number(item.dataset.guestIndex);
+  const guest = ensureGuestId(content.podcastGuests[guestIndex], guestIndex);
 
   if (!guest) {
     return;
@@ -540,7 +559,7 @@ guestList.addEventListener("click", async (event) => {
     const shouldDelete = window.confirm(`Delete ${guest.name} from podcast guests?`);
 
     if (shouldDelete) {
-      content.podcastGuests = content.podcastGuests.filter((entry) => entry.id !== guestId);
+      content.podcastGuests = content.podcastGuests.filter((entry, index) => index !== guestIndex);
       if (await saveContent("Guest card deleted successfully.")) {
         resetGuestForm();
       }

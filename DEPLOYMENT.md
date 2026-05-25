@@ -22,6 +22,8 @@ supabase/schema.sql
 ```
 
 This creates the `site_content` table and the `contact_messages` table.
+If the live website shows default content on other devices, rerun this SQL so
+the table grants and row-level security policies are updated.
 
 ## 2. Get Supabase Keys
 
@@ -54,6 +56,11 @@ ADMIN_SESSION_TOKEN=make-a-long-random-secret-token
 Use a long random value for `ADMIN_SESSION_TOKEN`, for example a 40+ character
 random string. The app has a fallback token so login will not completely break
 if this variable is missing, but setting your own token is strongly recommended.
+
+Important: `SUPABASE_SERVICE_ROLE_KEY` must be the Supabase secret/service role
+key, not the public anon key. If it is the anon key, the admin dashboard will
+appear to save in your browser, but other devices will still see old/default
+content.
 
 ## 4. Deploy to Vercel
 

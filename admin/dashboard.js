@@ -46,7 +46,7 @@ function showStatus(message, isError = false) {
   window.clearTimeout(showStatus.timeoutId);
   showStatus.timeoutId = window.setTimeout(() => {
     statusEl.hidden = true;
-  }, 3600);
+  }, isError ? 9000 : 3600);
 }
 
 function setText(id, value) {
@@ -57,13 +57,21 @@ function setText(id, value) {
 }
 
 async function saveContent(message) {
+  content = store.saveSiteContent(content);
+  renderDashboard();
+
   try {
     content = await store.saveSharedContent(content);
     renderDashboard();
     showStatus(message);
     return true;
   } catch (error) {
-    showStatus(error.message || "Content could not be saved.", true);
+    showStatus(
+      `Saved in this browser, but could not publish live: ${
+        error.message || "Content could not be saved."
+      }`,
+      true
+    );
     return false;
   }
 }
@@ -406,7 +414,7 @@ contentForm.addEventListener("submit", async (event) => {
   await saveContent("Website content saved successfully.");
 });
 
-getField("use-featured-source").addEventListener("click", () => {
+getField("use-featured-source").addEventListener("click", async () => {
   const selectedGuestId = getValue("featured-source-field");
   const selectedGuest = content.podcastGuests.find((guest) => guest.id === selectedGuestId);
 
@@ -421,7 +429,8 @@ getField("use-featured-source").addEventListener("click", () => {
   setValue("featured-video-field", selectedGuest.videoUrl);
   setValue("featured-episode-field", selectedGuest.videoUrl);
   setValue("featured-accent-field", selectedGuest.accentClass || "accent-red");
-  showStatus("Selected guest loaded into the featured fields. Save to publish.");
+  setFeaturedFromGuest(selectedGuest);
+  await saveContent("Selected guest is now featured.");
 });
 
 getField("new-guest-button").addEventListener("click", () => {
@@ -441,14 +450,10 @@ guestForm.addEventListener("submit", async (event) => {
     content.podcastGuests = content.podcastGuests.map((item) =>
       item.id === existingId ? guest : item
     );
-    if (!(await saveContent("Guest card updated successfully."))) {
-      return;
-    }
+    await saveContent("Guest card updated successfully.");
   } else {
     content.podcastGuests = [guest, ...content.podcastGuests];
-    if (!(await saveContent("Guest card added successfully."))) {
-      return;
-    }
+    await saveContent("Guest card added successfully.");
   }
 
   resetGuestForm();
@@ -509,14 +514,10 @@ upcomingForm.addEventListener("submit", async (event) => {
     content.upcomingGuests = content.upcomingGuests.map((item) =>
       item.id === existingId ? guest : item
     );
-    if (!(await saveContent("Upcoming guest updated successfully."))) {
-      return;
-    }
+    await saveContent("Upcoming guest updated successfully.");
   } else {
     content.upcomingGuests = [guest, ...content.upcomingGuests];
-    if (!(await saveContent("Upcoming guest added successfully."))) {
-      return;
-    }
+    await saveContent("Upcoming guest added successfully.");
   }
 
   resetUpcomingForm();

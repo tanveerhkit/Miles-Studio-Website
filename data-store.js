@@ -234,6 +234,7 @@
   async function saveSharedContent(content) {
     const token = sessionStorage.getItem(ADMIN_TOKEN_KEY);
     const normalized = mergeContent(content);
+    saveSiteContent(normalized);
 
     if (!token) {
       throw new Error("Admin session expired. Please login again.");

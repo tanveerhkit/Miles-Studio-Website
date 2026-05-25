@@ -340,6 +340,7 @@ function createUpcomingFromForm(existingId) {
 
 function setFeaturedFromGuest(guest) {
   content.featuredPodcast = {
+    sourceGuestId: guest.id,
     guestName: guest.name,
     description: guest.description,
     imageUrl: guest.imageUrl,
@@ -348,6 +349,17 @@ function setFeaturedFromGuest(guest) {
     videoUrl: guest.videoUrl,
     episodeUrl: guest.videoUrl,
   };
+}
+
+function syncFeaturedGuest(previousGuest, updatedGuest) {
+  const featured = content.featuredPodcast || {};
+  const isFeaturedGuest =
+    featured.sourceGuestId === previousGuest.id ||
+    (!featured.sourceGuestId && featured.guestName === previousGuest.name);
+
+  if (isFeaturedGuest) {
+    setFeaturedFromGuest(updatedGuest);
+  }
 }
 
 function bindImageUpload(fileFieldId, targetFieldId) {
@@ -447,9 +459,13 @@ guestForm.addEventListener("submit", async (event) => {
   const guest = createGuestFromForm(existingId);
 
   if (existingId) {
+    const previousGuest = content.podcastGuests.find((item) => item.id === existingId);
     content.podcastGuests = content.podcastGuests.map((item) =>
       item.id === existingId ? guest : item
     );
+    if (previousGuest) {
+      syncFeaturedGuest(previousGuest, guest);
+    }
     await saveContent("Guest card updated successfully.");
   } else {
     content.podcastGuests = [guest, ...content.podcastGuests];

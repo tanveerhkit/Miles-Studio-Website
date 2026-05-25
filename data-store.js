@@ -2,6 +2,7 @@
   const STORAGE_KEY = "milesStudio.content.v1";
   const AUTH_KEY = "milesStudio.adminSession.v2";
   const ADMIN_TOKEN_KEY = "milesStudio.adminToken.v1";
+  const PENDING_CONTENT_KEY = "milesStudio.pendingContentSave.v1";
   let lastAdminLoginError = "";
 
   const placeholderVideoUrl = "https://www.youtube.com/watch?v=ysz5S6PUM-U";
@@ -219,6 +220,10 @@
   }
 
   async function loadSharedContent() {
+    if (localStorage.getItem(PENDING_CONTENT_KEY)) {
+      return getSiteContent();
+    }
+
     try {
       const data = await requestJson("/api/content", {
         method: "GET",
@@ -235,6 +240,7 @@
     const token = sessionStorage.getItem(ADMIN_TOKEN_KEY);
     const normalized = mergeContent(content);
     saveSiteContent(normalized);
+    localStorage.setItem(PENDING_CONTENT_KEY, "true");
 
     if (!token) {
       throw new Error("Admin session expired. Please login again.");
@@ -248,6 +254,7 @@
       body: JSON.stringify({ content: normalized }),
     });
 
+    localStorage.removeItem(PENDING_CONTENT_KEY);
     return saveSiteContent(data?.content || normalized);
   }
 

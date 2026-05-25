@@ -155,18 +155,25 @@
   function mergeContent(savedContent) {
     const content = clone(defaultContent);
     const saved = savedContent && typeof savedContent === "object" ? savedContent : {};
+    const featuredGuestId = saved.featuredGuestId || saved.featuredPodcast?.sourceGuestId || "";
 
     return {
       ...content,
       ...saved,
+      featuredGuestId,
       hero: { ...content.hero, ...(saved.hero || {}) },
       featuredPodcast: {
         ...content.featuredPodcast,
         ...(saved.featuredPodcast || {}),
       },
-      podcastGuests: Array.isArray(saved.podcastGuests)
-        ? saved.podcastGuests
-        : content.podcastGuests,
+      podcastGuests: (
+        Array.isArray(saved.podcastGuests) ? saved.podcastGuests : content.podcastGuests
+      ).map((guest) => ({
+        ...guest,
+        isFeatured: featuredGuestId
+          ? guest.id === featuredGuestId
+          : Boolean(guest.isFeatured),
+      })),
       upcomingGuests: Array.isArray(saved.upcomingGuests)
         ? saved.upcomingGuests
         : content.upcomingGuests,

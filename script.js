@@ -95,8 +95,35 @@ function renderVideoFrame(featuredPodcast) {
   `;
 }
 
+function getFeaturedPodcast() {
+  const featured = siteContent.featuredPodcast || {};
+  const featuredGuestId = siteContent.featuredGuestId || featured.sourceGuestId || "";
+  const guest = siteContent.podcastGuests.find(
+    (item) =>
+      item.id === featuredGuestId ||
+      item.isFeatured ||
+      (!featuredGuestId && item.name === featured.guestName)
+  );
+
+  if (!guest) {
+    return featured;
+  }
+
+  return {
+    ...featured,
+    sourceGuestId: guest.id,
+    guestName: guest.name,
+    description: guest.description,
+    imageUrl: guest.imageUrl,
+    initials: guest.initials || store.getInitials(guest.name),
+    accentClass: guest.accentClass || featured.accentClass || "accent-red",
+    videoUrl: guest.videoUrl || featured.videoUrl,
+    episodeUrl: guest.videoUrl || featured.episodeUrl || featured.videoUrl,
+  };
+}
+
 function renderFeaturedPodcast() {
-  const featuredPodcast = siteContent.featuredPodcast;
+  const featuredPodcast = getFeaturedPodcast();
   const watchUrl = store.getYouTubeWatchUrl(
     featuredPodcast.episodeUrl || featuredPodcast.videoUrl
   );

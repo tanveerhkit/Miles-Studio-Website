@@ -339,6 +339,10 @@ async function loadMessages() {
 
 function createGuestFromForm(existingId) {
   const name = getValue("guest-name-field");
+  const existingGuest = existingId
+    ? content.podcastGuests.find((guest) => guest.id === existingId)
+    : null;
+
   return {
     id: existingId || store.createId("guest"),
     name,
@@ -348,6 +352,7 @@ function createGuestFromForm(existingId) {
     initials: store.getInitials(name),
     accentClass: getValue("guest-accent-field") || "accent-red",
     videoUrl: getValue("guest-video-field"),
+    isFeatured: Boolean(existingGuest?.isFeatured),
   };
 }
 
@@ -363,6 +368,11 @@ function createUpcomingFromForm(existingId) {
 }
 
 function setFeaturedFromGuest(guest) {
+  content.featuredGuestId = guest.id;
+  content.podcastGuests = content.podcastGuests.map((item) => ({
+    ...item,
+    isFeatured: item.id === guest.id,
+  }));
   content.featuredPodcast = {
     sourceGuestId: guest.id,
     guestName: guest.name,

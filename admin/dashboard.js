@@ -133,8 +133,8 @@ function renderFeaturedSourceOptions() {
   const selectedGuestId = content.featuredGuestId || content.featuredPodcast?.sourceGuestId || "";
   const options = content.podcastGuests
     .map(
-      (guest) =>
-        `<option value="${escapeAttribute(guest.id)}" ${
+      (guest, index) =>
+        `<option value="${escapeAttribute(guest.id)}" data-guest-index="${index}" ${
           guest.id === selectedGuestId ? "selected" : ""
         }>${escapeHtml(guest.name)} - ${escapeHtml(guest.title)}</option>`
     )
@@ -490,8 +490,13 @@ contentForm.addEventListener("submit", async (event) => {
 });
 
 getField("use-featured-source").addEventListener("click", async () => {
+  const select = getField("featured-source-field");
+  const selectedOption = select.selectedOptions[0];
+  const selectedGuestIndex = Number(selectedOption?.dataset.guestIndex);
   const selectedGuestId = getValue("featured-source-field");
-  const selectedGuest = content.podcastGuests.find((guest) => guest.id === selectedGuestId);
+  const selectedGuest = Number.isInteger(selectedGuestIndex)
+    ? ensureGuestId(content.podcastGuests[selectedGuestIndex], selectedGuestIndex)
+    : content.podcastGuests.find((guest) => guest.id === selectedGuestId);
 
   if (!selectedGuest) {
     showStatus("Choose a guest first.", true);

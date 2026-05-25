@@ -392,6 +392,11 @@
   box-shadow: var(--shadow-soft);
 }
 
+.admin-list-item.is-featured {
+  border-color: rgba(255, 0, 51, 0.38);
+  box-shadow: 0 14px 34px rgba(255, 0, 51, 0.1);
+}
+
 .admin-item-avatar {
   width: 66px;
   height: 66px;
@@ -459,6 +464,12 @@
 .admin-mini-link:hover {
   transform: translateY(-1px);
   background: var(--surface-soft);
+}
+
+.admin-mini-button.is-active {
+  background: var(--youtube);
+  border-color: var(--youtube);
+  color: #ffffff;
 }
 
 .admin-mini-button.danger:hover {

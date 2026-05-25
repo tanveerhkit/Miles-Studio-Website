@@ -119,14 +119,24 @@ function fillContentForm() {
   setValue("contact-whatsapp-field", content.contact.whatsappUrl);
 }
 
+function fillFeaturedFields(featuredPodcast) {
+  setValue("featured-name-field", featuredPodcast.guestName);
+  setValue("featured-description-field", featuredPodcast.description);
+  setValue("featured-video-field", featuredPodcast.videoUrl);
+  setValue("featured-episode-field", featuredPodcast.episodeUrl);
+  setValue("featured-image-field", featuredPodcast.imageUrl);
+  setValue("featured-accent-field", featuredPodcast.accentClass || "accent-red");
+}
+
 function renderFeaturedSourceOptions() {
   const select = getField("featured-source-field");
+  const selectedGuestId = content.featuredPodcast?.sourceGuestId || "";
   const options = content.podcastGuests
     .map(
       (guest) =>
-        `<option value="${escapeAttribute(guest.id)}">${escapeHtml(guest.name)} - ${escapeHtml(
-          guest.title
-        )}</option>`
+        `<option value="${escapeAttribute(guest.id)}" ${
+          guest.id === selectedGuestId ? "selected" : ""
+        }>${escapeHtml(guest.name)} - ${escapeHtml(guest.title)}</option>`
     )
     .join("");
 
@@ -192,10 +202,19 @@ function renderGuestList() {
     return;
   }
 
+  const featuredGuestId = content.featuredPodcast?.sourceGuestId || "";
+  const featuredGuestName = content.featuredPodcast?.guestName || "";
+
   guestList.innerHTML = content.podcastGuests
     .map(
-      (guest) => `
-        <article class="admin-list-item" data-guest-id="${escapeAttribute(guest.id)}">
+      (guest) => {
+        const isFeatured =
+          guest.id === featuredGuestId || (!featuredGuestId && guest.name === featuredGuestName);
+
+        return `
+        <article class="admin-list-item ${
+          isFeatured ? "is-featured" : ""
+        }" data-guest-id="${escapeAttribute(guest.id)}">
           ${renderSmallAvatar(guest)}
           <div>
             <h3>${escapeHtml(guest.name)}</h3>
@@ -203,8 +222,12 @@ function renderGuestList() {
             <p>${escapeHtml(guest.description)}</p>
           </div>
           <div class="admin-item-actions">
-            <button class="admin-mini-button" type="button" data-action="feature-guest">
-              Set Featured
+            <button class="admin-mini-button ${
+              isFeatured ? "is-active" : ""
+            }" type="button" data-action="feature-guest" ${
+              isFeatured ? "aria-pressed=\"true\"" : "aria-pressed=\"false\""
+            }>
+              ${isFeatured ? "Featured" : "Set Featured"}
             </button>
             <button class="admin-mini-button" type="button" data-action="edit-guest">Edit</button>
             <button class="admin-mini-button danger" type="button" data-action="delete-guest">
@@ -212,7 +235,8 @@ function renderGuestList() {
             </button>
           </div>
         </article>
-      `
+      `;
+      }
     )
     .join("");
 }
@@ -351,6 +375,15 @@ function setFeaturedFromGuest(guest) {
   };
 }
 
+async function featureGuest(guest, message) {
+  setFeaturedFromGuest(guest);
+  fillFeaturedFields(content.featuredPodcast);
+  renderStats();
+  renderFeaturedSourceOptions();
+  renderGuestList();
+  await saveContent(message);
+}
+
 function syncFeaturedGuest(previousGuest, updatedGuest) {
   const featured = content.featuredPodcast || {};
   const isFeaturedGuest =
@@ -435,14 +468,7 @@ getField("use-featured-source").addEventListener("click", async () => {
     return;
   }
 
-  setValue("featured-name-field", selectedGuest.name);
-  setValue("featured-description-field", selectedGuest.description);
-  setValue("featured-image-field", selectedGuest.imageUrl);
-  setValue("featured-video-field", selectedGuest.videoUrl);
-  setValue("featured-episode-field", selectedGuest.videoUrl);
-  setValue("featured-accent-field", selectedGuest.accentClass || "accent-red");
-  setFeaturedFromGuest(selectedGuest);
-  await saveContent("Selected guest is now featured.");
+  await featureGuest(selectedGuest, "Selected guest is now featured.");
 });
 
 getField("new-guest-button").addEventListener("click", () => {
@@ -496,8 +522,7 @@ guestList.addEventListener("click", async (event) => {
   }
 
   if (button.dataset.action === "feature-guest") {
-    setFeaturedFromGuest(guest);
-    await saveContent("Featured podcast updated successfully.");
+    await featureGuest(guest, `${guest.name} is now featured.`);
     return;
   }
 

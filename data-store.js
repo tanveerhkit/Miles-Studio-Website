@@ -198,6 +198,10 @@
     return normalized;
   }
 
+  function getFeaturedGuestId(content) {
+    return content?.featuredGuestId || content?.featuredPodcast?.sourceGuestId || "";
+  }
+
   function resetSiteContent() {
     localStorage.removeItem(STORAGE_KEY);
     return getSiteContent();
@@ -245,7 +249,10 @@
 
   async function saveSharedContent(content) {
     const token = sessionStorage.getItem(ADMIN_TOKEN_KEY);
-    const normalized = mergeContent(content);
+    const normalized = mergeContent({
+      ...content,
+      updatedAt: new Date().toISOString(),
+    });
     saveSiteContent(normalized);
     localStorage.setItem(PENDING_CONTENT_KEY, "true");
 
@@ -260,6 +267,18 @@
       },
       body: JSON.stringify({ content: normalized }),
     });
+
+    const liveData = await requestJson(`/api/content?ts=${Date.now()}`, {
+      method: "GET",
+      cache: "no-store",
+    });
+    const liveContent = mergeContent(liveData?.content || {});
+
+    if (getFeaturedGuestId(liveContent) !== getFeaturedGuestId(normalized)) {
+      throw new Error(
+        "Live publish did not keep the selected featured guest. Please check Supabase/Vercel settings."
+      );
+    }
 
     localStorage.removeItem(PENDING_CONTENT_KEY);
     return saveSiteContent(data?.content || normalized);

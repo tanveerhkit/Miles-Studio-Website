@@ -130,7 +130,7 @@ function fillFeaturedFields(featuredPodcast) {
 
 function renderFeaturedSourceOptions() {
   const select = getField("featured-source-field");
-  const selectedGuestId = content.featuredPodcast?.sourceGuestId || "";
+  const selectedGuestId = content.featuredGuestId || content.featuredPodcast?.sourceGuestId || "";
   const options = content.podcastGuests
     .map(
       (guest) =>
@@ -202,7 +202,7 @@ function renderGuestList() {
     return;
   }
 
-  const featuredGuestId = content.featuredPodcast?.sourceGuestId || "";
+  const featuredGuestId = content.featuredGuestId || content.featuredPodcast?.sourceGuestId || "";
   const featuredGuestName = content.featuredPodcast?.guestName || "";
 
   guestList.innerHTML = content.podcastGuests
@@ -416,6 +416,7 @@ async function featureGuest(guest, message) {
 function syncFeaturedGuest(previousGuest, updatedGuest) {
   const featured = content.featuredPodcast || {};
   const isFeaturedGuest =
+    content.featuredGuestId === previousGuest.id ||
     featured.sourceGuestId === previousGuest.id ||
     (!featured.sourceGuestId && featured.guestName === previousGuest.name);
 

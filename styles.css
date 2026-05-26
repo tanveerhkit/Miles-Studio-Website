@@ -350,6 +350,7 @@ textarea {
 .featured-card {
   display: grid;
   grid-template-columns: minmax(0, 1.28fr) minmax(300px, 0.72fr);
+  align-items: stretch;
   gap: 0;
   overflow: hidden;
   background: var(--surface);
@@ -359,7 +360,7 @@ textarea {
 }
 
 .video-frame {
-  aspect-ratio: 16 / 9;
+  height: 100%;
   min-height: 280px;
   background: var(--charcoal);
 }
@@ -875,6 +876,11 @@ textarea {
   .featured-card,
   .contact-layout {
     grid-template-columns: 1fr;
+  }
+
+  .video-frame {
+    aspect-ratio: 16 / 9;
+    height: auto;
   }
 
   .featured-content {

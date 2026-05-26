@@ -12,6 +12,7 @@ const upcomingList = document.querySelector("#upcoming-list");
 const messageList = document.querySelector("#message-list");
 const navLinks = document.querySelectorAll(".admin-nav-link");
 let contactMessages = [];
+let upcomingDraft = null;
 
 function getField(id) {
   return document.querySelector(`#${id}`);
@@ -178,6 +179,7 @@ function fillGuestForm(guest) {
 
 function resetUpcomingForm() {
   upcomingForm.reset();
+  upcomingDraft = null;
   delete upcomingForm.dataset.editIndex;
   setValue("upcoming-id-field", "");
   setValue("upcoming-status-field", "Coming Soon");
@@ -186,6 +188,7 @@ function resetUpcomingForm() {
 }
 
 function fillUpcomingForm(guest, index) {
+  upcomingDraft = null;
   upcomingForm.dataset.editIndex = String(index);
   setValue("upcoming-id-field", guest.id);
   setValue("upcoming-name-field", guest.name);
@@ -253,17 +256,20 @@ function renderUpcomingList() {
 
   upcomingList.innerHTML = content.upcomingGuests
     .map(
-      (guest, index) => `
+      (guest, index) => {
+        const item = upcomingDraft?.index === index ? upcomingDraft.guest : guest;
+
+        return `
         <article class="admin-list-item" data-upcoming-id="${escapeAttribute(
-          guest.id
+          item.id
         )}" data-upcoming-index="${index}">
           <div class="admin-item-avatar accent-ink" aria-hidden="true">
-            ${escapeHtml(store.getInitials(guest.name))}
+            ${escapeHtml(store.getInitials(item.name))}
           </div>
           <div>
-            <h3>${escapeHtml(guest.name)}</h3>
-            <p>${escapeHtml(guest.topic)}</p>
-            <p>${escapeHtml(guest.dateLabel)} - ${escapeHtml(guest.status)}</p>
+            <h3>${escapeHtml(item.name)}</h3>
+            <p>${escapeHtml(item.topic)}</p>
+            <p>${escapeHtml(item.dateLabel)} - ${escapeHtml(item.status)}</p>
           </div>
           <div class="admin-item-actions">
             <button class="admin-mini-button" type="button" data-action="edit-upcoming">Edit</button>
@@ -272,7 +278,8 @@ function renderUpcomingList() {
             </button>
           </div>
         </article>
-      `
+      `;
+      }
     )
     .join("");
 }
@@ -405,6 +412,25 @@ function ensureUpcomingId(guest, index) {
   );
 
   return guestWithId;
+}
+
+function getUpcomingEditIndex() {
+  const editIndex = Number(upcomingForm.dataset.editIndex);
+  return Number.isInteger(editIndex) ? editIndex : -1;
+}
+
+function previewUpcomingDraft() {
+  const editIndex = getUpcomingEditIndex();
+
+  if (editIndex < 0) {
+    return;
+  }
+
+  upcomingDraft = {
+    index: editIndex,
+    guest: createUpcomingFromForm(getValue("upcoming-id-field")),
+  };
+  renderUpcomingList();
 }
 
 function setFeaturedFromGuest(guest) {
@@ -601,14 +627,17 @@ getField("new-upcoming-button").addEventListener("click", () => {
 
 getField("upcoming-cancel-button").addEventListener("click", resetUpcomingForm);
 
+upcomingForm.addEventListener("input", previewUpcomingDraft);
+upcomingForm.addEventListener("change", previewUpcomingDraft);
+
 upcomingForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   const existingId = getValue("upcoming-id-field");
-  const editIndex = Number(upcomingForm.dataset.editIndex);
-  const guest = createUpcomingFromForm(existingId);
+  const editIndex = getUpcomingEditIndex();
+  const guest = upcomingDraft?.index === editIndex ? upcomingDraft.guest : createUpcomingFromForm(existingId);
 
-  if (Number.isInteger(editIndex)) {
+  if (editIndex >= 0) {
     content.upcomingGuests = content.upcomingGuests.map((item, index) =>
       index === editIndex ? guest : item
     );

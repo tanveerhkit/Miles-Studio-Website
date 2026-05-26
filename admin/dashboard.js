@@ -178,13 +178,15 @@ function fillGuestForm(guest) {
 
 function resetUpcomingForm() {
   upcomingForm.reset();
+  delete upcomingForm.dataset.editIndex;
   setValue("upcoming-id-field", "");
   setValue("upcoming-status-field", "Coming Soon");
   getField("upcoming-save-button").textContent = "Add Upcoming Guest";
   setText("upcoming-editor-title", "Add Upcoming Guest");
 }
 
-function fillUpcomingForm(guest) {
+function fillUpcomingForm(guest, index) {
+  upcomingForm.dataset.editIndex = String(index);
   setValue("upcoming-id-field", guest.id);
   setValue("upcoming-name-field", guest.name);
   setValue("upcoming-topic-field", guest.topic);
@@ -251,8 +253,10 @@ function renderUpcomingList() {
 
   upcomingList.innerHTML = content.upcomingGuests
     .map(
-      (guest) => `
-        <article class="admin-list-item" data-upcoming-id="${escapeAttribute(guest.id)}">
+      (guest, index) => `
+        <article class="admin-list-item" data-upcoming-id="${escapeAttribute(
+          guest.id
+        )}" data-upcoming-index="${index}">
           <div class="admin-item-avatar accent-ink" aria-hidden="true">
             ${escapeHtml(store.getInitials(guest.name))}
           </div>
@@ -384,6 +388,23 @@ function createUpcomingFromForm(existingId) {
     dateIso: getValue("upcoming-date-iso-field"),
     status: getValue("upcoming-status-field"),
   };
+}
+
+function ensureUpcomingId(guest, index) {
+  if (guest.id) {
+    return guest;
+  }
+
+  const guestWithId = {
+    ...guest,
+    id: store.createId("upcoming"),
+  };
+
+  content.upcomingGuests = content.upcomingGuests.map((item, itemIndex) =>
+    itemIndex === index ? guestWithId : item
+  );
+
+  return guestWithId;
 }
 
 function setFeaturedFromGuest(guest) {
@@ -584,12 +605,20 @@ upcomingForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   const existingId = getValue("upcoming-id-field");
+  const editIndex = Number(upcomingForm.dataset.editIndex);
   const guest = createUpcomingFromForm(existingId);
 
-  if (existingId) {
-    content.upcomingGuests = content.upcomingGuests.map((item) =>
-      item.id === existingId ? guest : item
+  if (Number.isInteger(editIndex)) {
+    content.upcomingGuests = content.upcomingGuests.map((item, index) =>
+      index === editIndex ? guest : item
     );
+    await saveContent("Upcoming guest updated successfully.");
+  } else if (existingId) {
+    const existingIndex = content.upcomingGuests.findIndex((item) => item.id === existingId);
+    content.upcomingGuests =
+      existingIndex >= 0
+        ? content.upcomingGuests.map((item, index) => (index === existingIndex ? guest : item))
+        : [guest, ...content.upcomingGuests];
     await saveContent("Upcoming guest updated successfully.");
   } else {
     content.upcomingGuests = [guest, ...content.upcomingGuests];
@@ -601,21 +630,21 @@ upcomingForm.addEventListener("submit", async (event) => {
 
 upcomingList.addEventListener("click", async (event) => {
   const button = event.target.closest("button[data-action]");
-  const item = event.target.closest("[data-upcoming-id]");
+  const item = event.target.closest("[data-upcoming-index]");
 
   if (!button || !item) {
     return;
   }
 
-  const upcomingId = item.dataset.upcomingId;
-  const guest = content.upcomingGuests.find((entry) => entry.id === upcomingId);
+  const upcomingIndex = Number(item.dataset.upcomingIndex);
+  const guest = ensureUpcomingId(content.upcomingGuests[upcomingIndex], upcomingIndex);
 
   if (!guest) {
     return;
   }
 
   if (button.dataset.action === "edit-upcoming") {
-    fillUpcomingForm(guest);
+    fillUpcomingForm(guest, upcomingIndex);
     return;
   }
 
@@ -624,7 +653,7 @@ upcomingList.addEventListener("click", async (event) => {
 
     if (shouldDelete) {
       content.upcomingGuests = content.upcomingGuests.filter(
-        (entry) => entry.id !== upcomingId
+        (entry, index) => index !== upcomingIndex
       );
       if (await saveContent("Upcoming guest deleted successfully.")) {
         resetUpcomingForm();
